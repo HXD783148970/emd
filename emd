@@ -1,0 +1,34 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Aug  6 10:49:04 2019
+对数据进行分层保存
+@author: 1701
+"""
+import numpy as np
+import pandas as pd
+#from sklearn import datasets
+import matplotlib.pyplot as plt
+from pyhht.emd import EMD
+from pyhht.visualization import plot_imfs
+
+#载入时间序列数据
+data = pd.read_csv('C:/Users/1701/Desktop/wt03-0.2-1.csv')
+#EMD经验模态分解
+decomposer = EMD(data['REAL_POWER'])
+imfs = decomposer.decompose()
+#绘制分解图
+plot_imfs(data['REAL_POWER'],imfs,data.index)
+#保存IMFs
+arr = np.vstack((imfs,data['REAL_POWER']))
+dataframe = pd.DataFrame(arr.T)
+#plt.scatter(data['WIND_SPEED'],dataframe['1'])
+dataframe.to_csv('C:/Users/1701/Desktop/3.csv',index=None,columns=None)
+
+obj = pd.read_csv('C:/Users/1701/Desktop/3.csv')
+plt.subplot(211)
+plt.scatter(data['WIND_SPEED'],obj['1'])
+plt.subplot(222)
+plt.scatter(data['WIND_SPEED'],obj['0'])
+plt.subplot(223)
+plt.scatter(data['WIND_SPEED'],obj['1'])
+plt.show()
